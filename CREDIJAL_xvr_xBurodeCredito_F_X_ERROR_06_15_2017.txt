@@ -74,7 +74,7 @@ Select --c.PKOportunity,
 	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace(substring(rtrim(c.Domicilio),0,40), 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'PRIMER LINEA DE DIRECCION'
 	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace((substring(rtrim(c.Domicilio),40,len(rtrim(b.Domicilio)))), 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'SEGUNDA LINEA DE DIRECCION'
 	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace(c.new_Colonia, 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'COLONIA O  POBLACION'
-	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace(c.new_Ciudad, 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'DELEGACION O MUNICIPIO'
+	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace(c.new_delegacion, 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'DELEGACION O MUNICIPIO'
 	  ,UPPER(Replace(Replace(Replace(Replace(Replace(Replace(Replace(c.new_Ciudad, 'ú', 'u'), 'ó', 'o'), 'í', 'i'), 'é', 'e'), 'á', 'a'), 'Ü', 'u'), 'ñ', 'n')) AS 'CIUDAD'
 	  --,UPPER(case when b.state = 'D.F' then 'DF'
 	  --when b.state = 'EDO' then 'EM'

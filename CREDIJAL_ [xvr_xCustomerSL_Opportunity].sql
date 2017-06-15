@@ -41,8 +41,9 @@ select
 ,xo.new_Fechadecontratacion
 ,(xo.new_domicilio + ' ' + xo.new_numero) domicilio
 ,d.new_name new_colonia
-,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
- else c.new_municipiodelegacion end) as 'new_ciudad'
+,(c.new_name) as 'new_ciudad'
+ ,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
+ else c.new_municipiodelegacion end) as 'new_delegacion'
 ,xo.new_cptext
 ,xo.new_telefonocasa
 ,xo.new_numcontrato
@@ -86,8 +87,9 @@ select
 --+ ' ' + xo.new_numero
 ) domicilio
 ,d.new_name new_colonia
-,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
- else c.new_municipiodelegacion end) as 'new_ciudad'
+,(c.new_name) as 'new_ciudad'
+ ,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
+ else c.new_municipiodelegacion end) as 'new_delegacion'
 ,xo.new_CP
 ,xo.new_telefonocasa
 ,(select top 1 a.new_numcontrato from HERMES.CREDIJAL_MSCRM.dbo.OpportunityBase a where a.OpportunityId = xo.new_Oportunidad) as 'new_numcontrato' 
