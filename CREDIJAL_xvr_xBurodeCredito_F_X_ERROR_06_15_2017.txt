@@ -1,12 +1,13 @@
 USE [FINANCIERAAPP]
 GO
 
-/****** Object:  View [dbo].[xvr_xBurodeCredito_F_X]    Script Date: 15/06/2017 10:32:49 a.m. ******/
+/****** Object:  View [dbo].[xvr_xBurodeCredito_F_X]    Script Date: 15/06/2017 12:01:56 p.m. ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -110,7 +111,7 @@ Select --c.PKOportunity,
 	   ,UPPER('') AS 'IMPORTE DEL AVALUO'
 	   ,UPPER(case when a.terms is null then '' else a.terms end) AS 'NUMERO DE PAGOS'
 	   ,UPPER('M') AS 'FRECUENCIA DE PAGOS'
-	   ,CONVERT(Integer,(case when f.OrigDocAmt is null then e.OrigDocAmt else f.OrigDocAmt end)) AS 'MONTO A PAGAR'
+	   ,CONVERT(Integer,(case when f.OrigDocAmt is null then ISNULL(e.OrigDocAmt,0) else f.OrigDocAmt end)) AS 'MONTO A PAGAR'
 	   ,UPPER(case when REPLACE(CONVERT(VARCHAR(10),c.new_Fechadecontratacion, 103), '/', '') is null 
 			then '01011900'
 			else REPLACE(CONVERT(VARCHAR(10),c.new_Fechadecontratacion, 103), '/', '') end )  AS 'FECHA DE APERTURA DE CUENTA O CREDITO'
@@ -276,6 +277,7 @@ Select --c.PKOportunity,
 
 
 	--SELECT * FROM [xvr_xBurodeCredito08610] WHERE CUSTID = '003391'
+
 
 
 
