@@ -1,12 +1,13 @@
 USE [FINANCIERAAPP]
 GO
 
-/****** Object:  View [dbo].[xvr_xCustomerSL_Opportunity]    Script Date: 15/06/2017 10:52:23 a.m. ******/
+/****** Object:  View [dbo].[xvr_xCustomerSL_Opportunity]    Script Date: 15/06/2017 11:35:23 a.m. ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -40,7 +41,8 @@ select
 ,xo.new_Fechadecontratacion
 ,(xo.new_domicilio + ' ' + xo.new_numero) domicilio
 ,d.new_name new_colonia
-,c.new_name new_ciudad
+,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
+ else c.new_municipiodelegacion end) as 'new_ciudad'
 ,xo.new_cptext
 ,xo.new_telefonocasa
 ,xo.new_numcontrato
@@ -84,7 +86,8 @@ select
 --+ ' ' + xo.new_numero
 ) domicilio
 ,d.new_name new_colonia
-,c.new_name new_ciudad
+,(CASE WHEN C.new_municipiodelegacion is null then c.new_name
+ else c.new_municipiodelegacion end) as 'new_ciudad'
 ,xo.new_CP
 ,xo.new_telefonocasa
 ,(select top 1 a.new_numcontrato from HERMES.CREDIJAL_MSCRM.dbo.OpportunityBase a where a.OpportunityId = xo.new_Oportunidad) as 'new_numcontrato' 
@@ -101,6 +104,7 @@ LEFT OUTER JOIN  HERMES.CREDIJAL_MSCRM.dbo.new_aval XO
 left outer join HERMES.CREDIJAL_MSCRM.dbo.new_ciudad c on xo.new_ciudad = c.new_ciudadId
 left outer join HERMES.CREDIJAL_MSCRM.dbo.new_colonia d on xo.new_Colonia = d.new_coloniaId
 LEFT OUTER JOIN HERMES.CREDIJAL_MSCRM.dbo.new_ESTADOs e ON xo.NEW_ESTADO = e.new_estadosId
+
 
 
 
