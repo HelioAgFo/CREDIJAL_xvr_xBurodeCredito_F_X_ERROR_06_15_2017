@@ -1,14 +1,12 @@
---USE [FINANCIERAAPP]
---GO
+USE [FINANCIERAAPP]
+GO
 
---/****** Object:  View [dbo].[xvr_xBurodeCredito_F_X]    Script Date: 16/06/2017 10:06:30 a.m. ******/
---SET ANSI_NULLS ON
---GO
+/****** Object:  View [dbo].[xvr_xBurodeCredito_F_X]    Script Date: 16/06/2017 10:06:30 a.m. ******/
+SET ANSI_NULLS ON
+GO
 
---SET QUOTED_IDENTIFIER ON
---GO
-
-
+SET QUOTED_IDENTIFIER ON
+GO
 
 
 
@@ -20,7 +18,9 @@
 
 
 
---ALTER  VIEW [dbo].[xvr_xBurodeCredito_F_X] AS 
+
+
+ALTER  VIEW [dbo].[xvr_xBurodeCredito_F_X] AS 
 
 
 Select --c.PKOportunity, 
@@ -129,7 +129,30 @@ Select --c.PKOportunity,
 	   ,UPPER(case when REPLACE(CONVERT(VARCHAR(10),c.new_Fechadecontratacion, 103), '/', '') is null 
 			then '01011900'
 			else REPLACE(CONVERT(VARCHAR(10),c.new_Fechadecontratacion, 103), '/', '') end )  AS'FECHA DE ULTIMA COMPRA O DISPOSICION'
-	   ,(select top 1 
+	   ,(CASE WHEN 
+	-- CASO PARA CC
+			-- SALDO ACTUAL 0
+				CONVERT(Integer,(isnull(a.CurPerPost,0))) = 0
+			-- SALDO VENCIDO 0
+				AND CONVERT(Integer,( A.Past00 + A.Past01 + A.Past02 + A.Over02)) = 0
+			--FORMA DE PAGO 01,00
+				AND (CASE WHEN H.DiasVencidosDocumento = 99999999 and FORMAT(c.new_Fechadecontratacion, 'MMyyyy')  = FORMAT(x.RepEndDate, 'MMyyyy')  THEN '00' 
+				WHEN H.DiasVencidosDocumento = 99999999 and FORMAT(c.new_Fechadecontratacion, 'MMyyyy')  <> FORMAT(x.RepEndDate, 'MMyyyy')  THEN '01' 
+				WHEN H.DiasVencidosDocumento = 0 THEN '01'
+				WHEN H.DiasVencidosDocumento > 0 and H.DiasVencidosDocumento <= 29 THEN '02'
+				WHEN H.DiasVencidosDocumento > 29 and H.DiasVencidosDocumento <= 59 THEN '03'
+				WHEN H.DiasVencidosDocumento > 59 and H.DiasVencidosDocumento <= 89 THEN '04'
+				WHEN H.DiasVencidosDocumento > 89 and H.DiasVencidosDocumento <= 119 THEN '05'
+				WHEN H.DiasVencidosDocumento > 119 and H.DiasVencidosDocumento <= 149 THEN '06'
+				WHEN H.DiasVencidosDocumento > 149 and H.DiasVencidosDocumento <= 365 THEN '07'
+				WHEN H.DiasVencidosDocumento > 365  THEN '96'
+				WHEN I.MOP is not null and i.perpost <= FORMAT(x.RepEndDate, 'yyyyMM')  THEN I.MOP
+				ELSE
+				CASE WHEN  CONVERT(varchar(10), H.DiasVencidosDocumento) is null then '00' ELSE CONVERT(varchar(10), H.DiasVencidosDocumento) end
+				END) IN ('00','01')
+		   --MONTO A PAGAR 
+				AND Isnull(CONVERT(Integer,(case when f.OrigDocAmt is null then e.OrigDocAmt else f.OrigDocAmt end)),0) = 0
+	  THEN (select top 1 
 				REPLACE(CONVERT(VARCHAR(10),Max(x.DateAppl), 103), '/', '')--,A.CUSTID,a.user5,a.periodo 
 				from 
 				xvr_xBuroUltimoPagoCierre x
@@ -137,7 +160,9 @@ Select --c.PKOportunity,
 				--x.PERIODO <= '200912'
 				group by x.CUSTID,x.user5,x.periodo
 				order by Max(x.DateAppl) desc
-			) AS 'FECHA DE CIERRE'
+			)
+	  ELSE ''
+	  END) AS 'FECHA DE CIERRE'
 	   ,REPLACE(CONVERT(VARCHAR(10),DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,x.RepEndDate)+1,0)), 103), '/', '') AS 'FECHA DE REPORTE DE INFORMACION'
 	   ,UPPER('') AS 'GARANTIA'
 	   ,CONVERT(Integer,(isnull(G.[TOTAL DEL PAGARE],0) + isnull(G.[SEGURO CONTADO],0) + isnull(G.[SEGURO CREDITO],0) + isnull(G.[COMISION POR APERTURA],0) 
